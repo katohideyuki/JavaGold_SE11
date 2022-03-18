@@ -20,12 +20,12 @@ public class FileLoad {
   }
 
   private static void getFruit(String fileName, char c) {
-    Stream<String> fruitStream = null;
-    try {
-      fruitStream = Files.lines(Paths.get(fileName));
+    try (Stream<String> fruitStream = Files.lines(Paths.get(fileName))) {
       List<String> fruitList = fruitStream.filter(fruit -> fruit.charAt(0) == c).collect(Collectors.toList());
       fruitList.forEach(x -> System.out.println(x));
-      fruitStream.close();
+
+      List<String> list = Files.readAllLines(Paths.get(fileName));
+      list.stream().filter(fruit -> fruit.charAt(0) == 'a').forEach(x-> System.out.println(x));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
