@@ -3,6 +3,7 @@ package chapter_13_05;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,9 @@ class ItemTest {
 
   @BeforeEach
   void 前準備() {
-    list = Arrays.asList(new Item("apple", 100), new Item("apple", 500), new Item("banana", 800),
-        new Item("grape", 900));
+    /* 直のasListだとremoveIfでUnsupportedOperationExceptionが起きるため、new LinkedListに入れる */
+    list = new LinkedList<Item>(
+        Arrays.asList(new Item("apple", 100), new Item("apple", 500), new Item("banana", 800), new Item("grape", 900)));
     item = list.get(0);
     item2 = list.get(1);
     expectedNum = (item.getPrice() + item2.getPrice()) / 2;
@@ -47,14 +49,21 @@ class ItemTest {
     assertEquals(expectedNum, item.getAvarage(list), "平均値の取得 : 失敗"); // 250, 250
   }
 
+  @Test
+  void りんごが一つも入っていない複数の果物が入ったリストを渡すしたら_0を返す() {
+    list.removeIf(x -> x.getName().equals("apple"));
+    assertEquals(0, item.getAvarage(list), "平均値を取得しない : 失敗"); // 0,0
+  }
+
 }
 
 /**
  * TODOリスト<br>
- * - [x] 渡されたItem型のリストに入っているappleの価格の平均を返す<br>
- * --- [ ] Item型のリストを渡したら、appleの価格を返す<br>
- * ----- [x] りんごの価格が100になっているインスタンスが一つ入ったリストを渡したら_りんごの価格の100を返す() --- [ ]
- * Item型を渡したら、aplleの価格の平均を返す<br>
+ * - [x] りんごのみが入ったリストを渡したら_りんごの価格の平均を返す<br>
+ * --- [x] 1つのりんごのみが入ったリストを渡したら_りんごの価格の平均を返す<br>
+ * --- [x] 2つのりんごのみが入ったリストを渡したら_りんごの価格の平均を返す : 三角測量<br>
+ * - [x] 複数の果物が入ったリストを渡しても_りんごの価格の平均を返す<br>
+ * - [x] りんごが一つも入っていない複数の果物が入ったリストを渡すしたら_0を返す<br>
  *
  * ※ assertなんちゃらのメッセージ（第三引数）の必要性がいまだ不明。。。<br>
  */
