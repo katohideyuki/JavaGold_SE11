@@ -1,7 +1,11 @@
 package chapter_13_12;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -10,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CountUp {
   private AtomicInteger countNum;
+  private Future<?> future;
 
   public static void main(String[] a) {
 
@@ -27,15 +32,18 @@ public class CountUp {
     ExecutorService service = Executors.newFixedThreadPool(10);
 
     for (int i = 0; i < 10; i++) {
-      service.submit(() -> {
+      future = service.submit(() -> {
         for (int j = 0; j < 10000; j++) {
-//          synchronized (this) { /* 自分自身(CountUpインスタンス)をロック */
-            countNum.incrementAndGet(); // Atomic用のインクリメント
-//          }
+          countNum.incrementAndGet(); // Atomic用のインクリメント
         }
       });
     }
-    service.shutdown();
-    return countNum.intValue();
+    try {
+      if ((future.get(10, TimeUnit.SECONDS) == null))
+        service.shutdown(); // 処理が終わるのを待つ
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      e.printStackTrace();
+    }
+    return countNum.intValue(); // 処理が終わる前にcountNumを返してしまうため、Future.getで待機する
   }
 }
