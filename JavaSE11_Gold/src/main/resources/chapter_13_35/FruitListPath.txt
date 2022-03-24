@@ -1,0 +1,1 @@
+src/main/resources/chapter_13_02/FruitList.txt
