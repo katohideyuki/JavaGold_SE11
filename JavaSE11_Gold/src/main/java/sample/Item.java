@@ -1,11 +1,11 @@
 package sample;
 
- /* 商品を管理するクラス */
+/* 商品を管理するクラス */
 public class Item {
-  private final String code;  // 商品コード
-  private final String name;  // 名前
-  private final int price;    // 値段
-  private final int priority; // 優先度
+  final String code;  // 商品コード
+  final String name;  // 名前
+  final int price;    // 値段
+  final int priority; // 優先度
 
   /* コンストラクタ */
   public Item(String code, String name, int price, int priority) {
@@ -26,5 +26,4 @@ public class Item {
     return String.format(" code : %s, name : %s, price : %s, priority : %s%n",
         getCode(), getName(), getPrice(), getPriority());
   }
-
 }
